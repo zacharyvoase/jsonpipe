@@ -19,6 +19,6 @@ setup(
     package_dir={'': 'src'},
     py_modules=['jsonpipe'],
     entry_points={'console_scripts': ['jsonpipe = jsonpipe:main']},
-    install_requires=['simplejson>=2.1.3'],
+    install_requires=['simplejson>=2.1.3', 'argparse>=1.2.1'],
     test_suite='jsonpipe._get_tests',
 )

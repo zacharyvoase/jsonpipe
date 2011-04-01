@@ -2,9 +2,20 @@
 
 from __future__ import with_statement
 import contextlib
+import os.path as p
 import sys
 
+import argparse
 import simplejson
+
+
+__all__ = ['JSONPiper', 'jsonpipe']
+
+# Read in the version from the VERSION file.
+version_filename = p.join(p.dirname(p.dirname(__file__)), 'VERSION')
+with open(version_filename) as version_file:
+    __version__ = version_file.read().strip()
+del version_filename, version_file
 
 
 class JSONPiper(object):
@@ -242,5 +253,15 @@ def _get_tests():
             optionflags=(doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE))
 
 
+PARSER = argparse.ArgumentParser()
+PARSER.add_argument('-s', '--separator', metavar='SEP', default='/',
+        help="Set a custom path component separator (default: /)")
+PARSER.add_argument('-v', '--version', action='version',
+        version='jsonpipe v%s' % (__version__,))
+
+
 def main():
-    raise NotImplementedError
+    args = PARSER.parse_args()
+    json_obj = simplejson.load(sys.stdin,
+            object_pairs_hook=simplejson.OrderedDict)
+    JSONPiper(sys.stdout, pathsep=args.separator).write(json_obj)
