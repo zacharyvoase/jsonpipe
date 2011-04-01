@@ -12,7 +12,7 @@ import simplejson
 __all__ = ['JSONPiper', 'jsonpipe']
 
 # Read in the version from the VERSION file.
-version_filename = p.join(p.dirname(p.dirname(__file__)), 'VERSION')
+version_filename = p.join(p.dirname(__file__), 'VERSION')
 with open(version_filename) as version_file:
     __version__ = version_file.read().strip()
 del version_filename, version_file
