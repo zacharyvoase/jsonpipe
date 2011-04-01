@@ -24,7 +24,7 @@ Python.
 Example
 =======
 
-A ``<pre>`` is worth a thousand words. For simple JSON values:
+A ``<pre>`` is worth a thousand words. For simple JSON values::
 
     $ echo '"Hello, World!"' | jsonpipe
     /	"Hello, World!"
@@ -45,7 +45,7 @@ single tab character separates the path on the left from the literal value on
 the right.
 
 Composite data structures use a hierarchical syntax, where individual
-keys/indices are children of the path to the containing object:
+keys/indices are children of the path to the containing object::
 
     $ echo '{"a": 1, "b": 2}' | jsonpipe
     /	{}
@@ -61,7 +61,7 @@ For an object or array, the right-hand column indicates the datatype, and will
 be either ``{}`` (object) or ``[]`` (array). For objects, the order of the keys
 is preserved in the output.
 
-The path syntax allows arbitrarily complex data structures:
+The path syntax allows arbitrarily complex data structures::
 
     $ echo '[{"a": [{"b": {"c": ["foo"]}}]}]' | jsonpipe
     /	[]
@@ -79,7 +79,7 @@ Caveat: Path Separators
 Because the path components are separated by ``/`` characters, an object key
 like ``"abc/def"`` would result in ambiguous output. jsonpipe will throw
 an error if this occurs in your input, so that you can recognize and handle the
-issue. To mitigate the problem, you can choose a different path separator:
+issue. To mitigate the problem, you can choose a different path separator::
 
     $ echo '{"abc/def": 123}' | jsonpipe -s '☃'
     ☃	{}
@@ -93,7 +93,7 @@ the key in most JSON objects, but any character or string (e.g. ``:``, ``::``,
 Installation
 ============
 
-**jsonpipe** is written in Python, so is best installed using ``pip``:
+**jsonpipe** is written in Python, so is best installed using ``pip``::
 
     pip install jsonpipe
 
