@@ -90,6 +90,43 @@ the key in most JSON objects, but any character or string (e.g. ``:``, ``::``,
 ``~``) will do.
 
 
+Python API
+==========
+
+Since jsonpipe is written in Python, you can import it and use it without
+having to spawn another process::
+
+    >>> from jsonpipe import jsonpipe
+    >>> for line in jsonpipe({"a": 1, "b": 2}):
+    ...     print line
+    /	{}
+    /a	1
+    /b	2
+
+Note that the ``jsonpipe()`` generator function takes a Python object, not a
+JSON string, so the order of dictionary keys may be slightly unpredictable in
+the output. You can use ``simplejson.OrderedDict`` to get a fixed ordering::
+
+    >>> from simplejson import OrderedDict
+    >>> obj = OrderedDict([('a', 1), ('b', 2), ('c', 3)])
+    >>> obj
+    OrderedDict([('a', 1), ('b', 2), ('c', 3)])
+    >>> for line in jsonpipe(obj):
+    ...     print line
+    /	{}
+    /a	1
+    /b	2
+    /c	3
+
+A more general hint: if you need to parse JSON but maintain ordering for object
+keys, use the ``object_pairs_hook`` option on ``simplejson.load(s)``::
+
+    >>> import simplejson
+    >>> simplejson.loads('{"a": 1, "b": 2, "c": 3}',
+    ...                  object_pairs_hook=simplejson.OrderedDict)
+    OrderedDict([('a', 1), ('b', 2), ('c', 3)])
+
+
 Installation
 ============
 
@@ -97,8 +134,7 @@ Installation
 
     pip install jsonpipe
 
-Note that it probably requires Python v2.5+ for now, although work on
-compatibility with previous versions of Python is in progress.
+Note that it requires Python v2.5 or later (simplejson only supports 2.5+).
 
 
 (Un)license
