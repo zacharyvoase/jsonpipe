@@ -143,6 +143,9 @@ def jsonunpipe(lines, pathsep='/', discard='',
 
         >>> def unpipe(s): # Shim for easier demonstration.
         ...     print repr(jsonunpipe(s.strip().splitlines()))
+
+    Works as expected for simple JSON values::
+
         >>> unpipe('/\t"abc"')
         u'abc'
         >>> unpipe('/\t123')
@@ -155,11 +158,15 @@ def jsonunpipe(lines, pathsep='/', discard='',
         True
         >>> unpipe('/\tfalse')
         False
+
+    And likewise for more complex objects::
+
         >>> unpipe('''
         ... /\t{}
         ... /a\t1
         ... /b\t2''')
         {'a': 1, 'b': 2}
+
         >>> unpipe('''
         ... /\t[]
         ... /0\t{}
@@ -169,6 +176,12 @@ def jsonunpipe(lines, pathsep='/', discard='',
         ... /0/a/0/b/c\t[]
         ... /0/a/0/b/c/0\t"foo"''')
         [{'a': [{'b': {'c': [u'foo']}}]}]
+
+    Any level in the path left unspecified will be assumed to be an object::
+
+        >>> unpipe('''
+        ... /a/b/c\t123''')
+        {'a': {'b': {'c': 123}}}
     """
 
     def parse_line(line):
@@ -178,6 +191,9 @@ def jsonunpipe(lines, pathsep='/', discard='',
     def getitem(obj, index):
         if isinstance(obj, (list, tuple)):
             return obj[int(index)]
+        # All non-existent keys are assumed to be an object.
+        if index not in obj:
+            obj[index] = decoder.decode('{}')
         return obj[index]
 
     def setitem(obj, index, value):
@@ -188,13 +204,13 @@ def jsonunpipe(lines, pathsep='/', discard='',
                 return
         obj[index] = value
 
-    output = not_set = object()
+    output = decoder.decode('{}')
     for line in lines:
         path, obj = parse_line(line)
         if path == ['']:
             output = obj
-        else:
-            setitem(reduce(getitem, path[:-1], output), path[-1], obj)
+            continue
+        setitem(reduce(getitem, path[:-1], output), path[-1], obj)
     return output
 
 
