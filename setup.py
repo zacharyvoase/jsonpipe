@@ -25,7 +25,8 @@ setup(
     author_email='z@dvxhouse.com',
     url='http://github.com/dvxhouse/jsonpipe',
     py_modules=['jsonpipe'],
-    entry_points={'console_scripts': ['jsonpipe = jsonpipe:main']},
+    entry_points={'console_scripts': ['jsonpipe = jsonpipe:main',
+                                      'jsonunpipe = jsonpipe:main_unpipe']},
     install_requires=['simplejson>=2.1.3', 'argparse>=1.2.1'],
     test_suite='jsonpipe._get_tests',
 )

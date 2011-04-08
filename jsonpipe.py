@@ -242,7 +242,7 @@ PARSER = argparse.ArgumentParser()
 PARSER.add_argument('-s', '--separator', metavar='SEP', default='/',
                     help="Set a custom path component separator (default: /)")
 PARSER.add_argument('-v', '--version', action='version',
-                    version='jsonpipe v%s' % (__version__,))
+                    version='%%(prog)s v%s' % (__version__,))
 
 
 def main():
@@ -253,3 +253,13 @@ def main():
                                object_pairs_hook=simplejson.OrderedDict)
     for line in jsonpipe(json_obj, pathsep=args.separator):
         print line
+
+
+def main_unpipe():
+    args = PARSER.parse_args()
+
+    simplejson.dump(
+        jsonunpipe(iter(sys.stdin), pathsep=args.separator,
+                   decoder=simplejson.JSONDecoder(
+                       object_pairs_hook=simplejson.OrderedDict)),
+        sys.stdout)
