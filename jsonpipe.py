@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os.path as p
+import re
 import sys
 
 import argparse
@@ -132,6 +133,68 @@ def jsonpipe(obj, pathsep='/', path=()):
 
         for line in jsonpipe(value, pathsep=pathsep, path=path + (key,)):
             yield line
+
+
+def jsonunpipe(lines, pathsep='/', discard=''):
+
+    r"""
+    Parse a stream of jsonpipe output back into a JSON object.
+
+        >>> def unpipe(s): # Shim for easier demonstration.
+        ...     print repr(jsonunpipe(s.strip().splitlines()))
+        >>> unpipe('/\t"abc"')
+        u'abc'
+        >>> unpipe('/\t123')
+        123
+        >>> unpipe('/\t0.25')
+        0.25
+        >>> unpipe('/\tnull')
+        None
+        >>> unpipe('/\ttrue')
+        True
+        >>> unpipe('/\tfalse')
+        False
+        >>> unpipe('''
+        ... /\t{}
+        ... /a\t1
+        ... /b\t2''')
+        {'a': 1, 'b': 2}
+        >>> unpipe('''
+        ... /\t[]
+        ... /0\t{}
+        ... /0/a\t[]
+        ... /0/a/0\t{}
+        ... /0/a/0/b\t{}
+        ... /0/a/0/b/c\t[]
+        ... /0/a/0/b/c/0\t"foo"''')
+        [{'a': [{'b': {'c': [u'foo']}}]}]
+    """
+
+    def parse_line(line):
+        path, json = line.rstrip().split('\t')
+        return path.split(pathsep)[1:], simplejson.loads(json)
+
+    def getitem(obj, index):
+        if isinstance(obj, (list, tuple)):
+            return obj[int(index)]
+        return obj[index]
+
+    def setitem(obj, index, value):
+        if isinstance(obj, list):
+            index = int(index)
+            if len(obj) == index:
+                obj.append(value)
+                return
+        obj[index] = value
+
+    output = not_set = object()
+    for line in lines:
+        path, obj = parse_line(line)
+        if path == ['']:
+            output = obj
+        else:
+            setitem(reduce(getitem, path[:-1], output), path[-1], obj)
+    return output
 
 
 def to_str(obj):
