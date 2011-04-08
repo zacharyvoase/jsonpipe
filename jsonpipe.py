@@ -135,7 +135,8 @@ def jsonpipe(obj, pathsep='/', path=()):
             yield line
 
 
-def jsonunpipe(lines, pathsep='/', discard=''):
+def jsonunpipe(lines, pathsep='/', discard='',
+               decoder=simplejson._default_decoder):
 
     r"""
     Parse a stream of jsonpipe output back into a JSON object.
@@ -172,7 +173,7 @@ def jsonunpipe(lines, pathsep='/', discard=''):
 
     def parse_line(line):
         path, json = line.rstrip().split('\t')
-        return path.split(pathsep)[1:], simplejson.loads(json)
+        return path.split(pathsep)[1:], decoder.decode(json)
 
     def getitem(obj, index):
         if isinstance(obj, (list, tuple)):
