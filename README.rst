@@ -90,6 +90,23 @@ the key in most JSON objects, but any character or string (e.g. ``:``, ``::``,
 ``~``) will do.
 
 
+jsonunpipe
+==========
+
+Another useful part of the library is ``jsonunpipe``, which turns jsonpipe
+output back into JSON proper::
+
+    $ echo '{"a": 1, "b": 2}' | jsonpipe | jsonunpipe
+    {"a": 1, "b": 2}
+
+jsonunpipe also supports incomplete information (such as you might get from
+grep), and will assume all previously-undeclared parts of a path to be JSON
+objects::
+
+    $ echo "/a/b/c	123" | jsonunpipe
+    {"a": {"b": {"c": 123}}}
+
+
 Python API
 ==========
 
@@ -126,6 +143,19 @@ keys, use the ``object_pairs_hook`` option on ``simplejson.load(s)``::
     ...                  object_pairs_hook=simplejson.OrderedDict)
     OrderedDict([('a', 1), ('b', 2), ('c', 3)])
 
+Of course, a Python implementation of jsonunpipe also exists::
+
+    >>> from jsonpipe import jsonunpipe
+    >>> jsonunpipe(['/\t{}', '/a\t123'])
+    {'a': 123}
+
+You can pass a ``decoder`` parameter, as in the following example, where the
+JSON object returned uses an ordered dictionary::
+
+    >>> jsonunpipe(['/\t{}', '/a\t123', '/b\t456'],
+    ...            decoder=simplejson.JSONDecoder(
+    ...                object_pairs_hook=simplejson.OrderedDict))
+    OrderedDict([('a', 123), ('b', 456)])
 
 Installation
 ============
