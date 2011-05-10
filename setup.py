@@ -29,6 +29,6 @@ setup(
     packages=find_packages(where='src'),
     entry_points={'console_scripts': ['jsonpipe = jsonpipe:main',
                                       'jsonunpipe = jsonpipe:main_unpipe']},
-    install_requires=['simplejson>=2.1.3', 'argparse>=1.1', 'calabash>=0.0.2'],
+    install_requires=['simplejson>=2.1.3', 'argparse>=1.1', 'calabash==0.0.3'],
     test_suite='jsonpipe._get_tests',
 )

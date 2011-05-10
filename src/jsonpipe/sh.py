@@ -9,17 +9,17 @@ import jsonpipe as jp
 __all__ = ['jsonpipe', 'jsonunpipe', 'select', 'search_attr']
 
 
-jsonpipe = calabash.source(jp.jsonpipe)
+jsonpipe = calabash.pipe(jp.jsonpipe)
 
 
-@calabash.sink
+@calabash.pipe
 def jsonunpipe(stdin, *args, **kwargs):
     """Calabash wrapper for :func:`jsonpipe.jsonunpipe`."""
 
     yield jp.jsonunpipe(stdin, *args, **kwargs)
 
 
-@calabash.sink
+@calabash.pipe
 def select(stdin, path, pathsep='/'):
 
     r"""
@@ -49,7 +49,7 @@ def select(stdin, path, pathsep='/'):
                     re.escape(pathsep))))
 
 
-@calabash.sink
+@calabash.pipe
 def search_attr(stdin, attr, value, pathsep='/'):
 
     r"""
