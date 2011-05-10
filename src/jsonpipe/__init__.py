@@ -9,7 +9,7 @@ from pipe import jsonpipe, jsonunpipe
 
 
 __all__ = ['jsonpipe', 'jsonunpipe']
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 
 
 def _get_tests():
