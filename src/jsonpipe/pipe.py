@@ -139,7 +139,7 @@ def jsonunpipe(lines, pathsep='/', discard='',
     Works as expected for simple JSON values::
 
         >>> unpipe('/\t"abc"')
-        u'abc'
+        'abc'
         >>> unpipe('/\t123')
         123
         >>> unpipe('/\t0.25')
@@ -167,7 +167,7 @@ def jsonunpipe(lines, pathsep='/', discard='',
         ... /0/a/0/b\t{}
         ... /0/a/0/b/c\t[]
         ... /0/a/0/b/c/0\t"foo"''')
-        [{'a': [{'b': {'c': [u'foo']}}]}]
+        [{'a': [{'b': {'c': ['foo']}}]}]
 
     Any level in the path left unspecified will be assumed to be an object::
 
