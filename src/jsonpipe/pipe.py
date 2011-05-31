@@ -106,7 +106,7 @@ def jsonpipe(obj, pathsep='/', path=()):
     elif isinstance(obj, dict):
         yield output('{}')
         iterator = obj.iteritems()
-    elif isinstance(obj, (list, tuple)):
+    elif hasattr(obj, '__iter__'):
         yield output('[]')
         iterator = enumerate(obj)
     else:
